@@ -24,7 +24,14 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    
+    const sportsCollection = client.db("sportsDB").collection("sportsCollection");
+
+    app.post("/sports", async(req, res)=>{
+      const data = req.body;
+      const result = await sportsCollection.insertOne(data);
+      res.send(result);
+      console.log('data successfully addeded')
+    })
 
 
 
