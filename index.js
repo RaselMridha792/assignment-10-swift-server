@@ -7,7 +7,7 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri =
   `mongodb+srv://${process.env.USER_DB}:${process.env.PASS_DB}@cluster0.epzmh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -25,6 +25,25 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const sportsCollection = client.db("sportsDB").collection("sportsCollection");
+
+    app.get("/sports/:id", async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await sportsCollection.findOne(query)
+      res.send(result);
+    })
+
+    app.get("/allSports", async(req, res)=>{
+      const cursor= sportsCollection.find();
+      const result = await cursor.toArray()
+      res.send(result);
+    })
+
+    app.get("/sports", async(req, res)=>{
+      const cursor = sportsCollection.find().limit(6)
+      const result = await cursor.toArray();
+      res.send(result);
+    })
 
     app.post("/sports", async(req, res)=>{
       const data = req.body;
