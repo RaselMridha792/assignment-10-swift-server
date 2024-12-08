@@ -105,6 +105,16 @@ async function run() {
       console.log("data successfully addeded");
     });
 
+
+    // for get category data 
+    app.get("/shopNow/:category", async(req, res)=>{
+      const categories = req.params.category;
+      const query = {category: categories};
+      const cursor = sportsCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
