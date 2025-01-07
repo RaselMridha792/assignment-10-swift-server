@@ -26,6 +26,10 @@ async function run() {
     const sportsCollection = client
       .db("sportsDB")
       .collection("sportsCollection");
+    const cartsCollection = client
+      .db("sportsDB")
+      .collection("cartsCollection");
+
 
     // get data using id
     app.get("/sports/:id", async (req, res) => {
@@ -93,7 +97,7 @@ async function run() {
     });
 
     app.get("/sports", async (req, res) => {
-      const cursor = sportsCollection.find().limit(6);
+      const cursor = sportsCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
@@ -113,6 +117,20 @@ async function run() {
       const cursor = sportsCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
+    })
+
+    app.post('/shopNow/carts', async(req, res)=>{
+      const cartItems = req.body;
+      const result = await cartsCollection.insertOne(cartItems)
+      res.send(result);
+    })
+
+    app.get('/shopnow/carts/:user', async(req, res)=>{
+      const userMail = req.params.user;
+      const query = {users: userMail}
+      const cursor = cartsCollection.find(query)
+      const result = await cursor.toArray()
+      res.send(result)
     })
 
     // Send a ping to confirm a successful connection
